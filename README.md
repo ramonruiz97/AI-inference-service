@@ -10,9 +10,13 @@ This service will expose an API to:
 - Scale automatically in cloud environments (Azure)
 
 ## Run locally
+```bash
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
 
 ## Run with Docker
+```bash
 docker build -t ai-svc:dev .
 docker run --rm -p 8000:8000 ai-svc:dev
+```
