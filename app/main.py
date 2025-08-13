@@ -1,6 +1,6 @@
 from app.middleware import add_request_id
-from app.models import PredictIn, PredictOut, Prediction
-from typing import List
+from app.models import PredictIn, PredictOut
+from app.predictor import predict_dummy
 import time
 from fastapi import FastAPI
 import asyncio
@@ -20,11 +20,9 @@ async def async_ping():
     return {"ping": "pong"}
 
 @app.post("/v1/predict", response_model=PredictOut)
-def predict_dummy(payload: PredictIn):
+def predict(payload: PredictIn) -> PredictOut:
     start_time = time.perf_counter()
-    results: List[List[Prediction]] = [
-        [Prediction(label="NEUTRAL", score=0.5)] for _ in payload.texts
-    ]
+    results = predict_dummy(payload.texts, payload.top_k or 1)
     #Usual microservices for more traceability
     time_ms = int((time.perf_counter() - start_time) * 1_000)
-    return PredictOut(results=results, processing_ms=time_ms)
+    return PredictOut(results = results, processing_ms= time_ms)
